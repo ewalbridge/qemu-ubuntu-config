@@ -1,0 +1,14 @@
+auto lo
+iface lo inet loopback
+	address 127.0.0.1
+	netmask 255.0.0.0
+
+auto eth0
+iface eth0 inet dhcp
+	
+auto tap0
+iface tap0 inet manual
+	pre-up tunctl -t $IFACE -u root
+	up ifconfig $IFACE 172.16.0.1/29 up
+	down ifconfig $IFACE down
+	down tunctl -d $IFACE
