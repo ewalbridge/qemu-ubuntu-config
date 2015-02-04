@@ -1,13 +1,16 @@
 #!/bin/bash
 
+ID=$1
+HWADDR0=$(cat /opt//var/vm$ID/hw0.addr)
+
 qemu-system-x86_64 \
 	-boot d \
-	-hda ubuntu-14.04.1-server-amd64.img \
+	-hda /opt//var/vm$ID/hd0.img \
 	-m 1024 \
-	-net nic,model=e1000,vlan=0,macaddr=46:b8:11:7d:41:6a \
-	-net tap,ifname=tap0,vlan=0,script=no,downscript=no \
-	-vnc :1 \
-	-monitor unix:/opt/monitor,server,nowait \
-	#-monitor telnet:0.0.0.0:9500,server,nowait \
-	#&
+	-net nic,model=e1000,vlan=0,macaddr=$HWADDR0 \
+	-net tap,ifname=tap$ID,vlan=0,script=no,downscript=no \
+	-vnc :$ID \
+	-monitor unix:/opt//var/vm$ID/manage,server,nowait \
+	-monitor telnet:0.0.0.0:950$ID,server,nowait \
+	&
 	
