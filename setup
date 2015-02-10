@@ -19,3 +19,5 @@ iface eth0 inet dhcp
   up iptables -t filter -A INPUT -p icmp -j ACCEPT
   up iptables -t filter -A INPUT -i lo -j ACCEPT
   up iptables -t filter -A INPUT -j REJECT
+  
+mkdir -p /opt/manage/{bin,etc,var}
