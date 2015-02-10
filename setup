@@ -1,3 +1,12 @@
-install Ubuntu 14.04.1
+# install Ubuntu 14.04.1
+apt-get update && apt-get -y upgrade
+# if vmware
+apt-get install -y open-vm-tools
 
-http://askubuntu.com/questions/30781/see-configured-rules-even-when-inactive
+# remove ufw
+# http://askubuntu.com/questions/30781/see-configured-rules-even-when-inactive
+ufw disable
+apt-get remove ufw
+apt-get purge ufw
+
+
