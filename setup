@@ -21,3 +21,4 @@ iface eth0 inet dhcp
   up iptables -t filter -A INPUT -j REJECT
   
 mkdir -p /opt/manage/{bin,etc,var}
+ln /etc/network/interfaces /opt/manage/etc/interfaces
