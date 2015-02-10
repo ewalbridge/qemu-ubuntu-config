@@ -1,7 +1,7 @@
 # Install Ubuntu 14.04.1
 apt-get update && apt-get -y upgrade
 # Install software
-apt-get install -y bridge-utils sipcalc qemu iotop
+apt-get install -y bridge-utils sipcalc qemu iotop nmon
 # If vmware
 apt-get install -y open-vm-tools
 
