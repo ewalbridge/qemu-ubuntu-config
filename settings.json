@@ -1,0 +1,44 @@
+{
+	"settings": {
+		"path": {
+			"root": "/opt/walcoe.com/"
+			},
+		"network": {
+			"switch": {
+				"index0": {
+					"name": "imvs",
+					"description": "Local Device Management Virtual Switch",
+					"address": "169.254.100.254",
+					"mask": "255.255.255.0"
+				},
+				"index1": {
+					"name": "rmvs",
+					"description": "Remote Device Management Virtual Switch",
+					"address": "169.254.101.254",
+					"mask": "255.255.255.0"
+				}
+			},
+			"interfaces": {
+				"gateway": {
+					"name": "tap0",
+					"description": "Virtual Router Gateway Interface",
+					"address": "169.254.102.254",
+					"mask": "255.255.255.0"
+				},
+				"ports": {
+					"count": 8,
+					"index0": {
+						"name": "imvp",
+						"description": "Local Device Management Virtual Port",
+						"address": "0.0.0.0",						
+					},
+					"index1": {
+						"name": "rmvp",
+						"description": "Remote Device Management Virtual Port",
+						"address": "0.0.0.0",
+					}
+				}
+			}
+		}
+	}
+}
