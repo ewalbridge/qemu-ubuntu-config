@@ -1,12 +1,21 @@
-# install Ubuntu 14.04.1
+# Install Ubuntu 14.04.1
 apt-get update && apt-get -y upgrade
-# if vmware
+# If vmware
 apt-get install -y open-vm-tools
 
-# remove ufw
+# Remove ufw
 # http://askubuntu.com/questions/30781/see-configured-rules-even-when-inactive
 ufw disable
 apt-get remove ufw
 apt-get purge ufw
 
-
+# Add iptables rules to primary interface
+nano /etc/network/interfaces
+auto eth0
+iface eth0 inet dhcp
+  up iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+  up iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
+  up iptables -t filter -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+  up iptables -t filter -A INPUT -p icmp -j ACCEPT
+  up iptables -t filter -A INPUT -i lo -j ACCEPT
+  up iptables -t filter -A INPUT -j REJECT
