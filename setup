@@ -6,6 +6,9 @@ apt-get install -yiotop nmon
 # If vmware
 apt-get install -y open-vm-tools
 
+# Add the module to the kernel on boot
+sudo su -c 'echo "8021q" >> /etc/modules'
+
 # Remove ufw
 # http://askubuntu.com/questions/30781/see-configured-rules-even-when-inactive
 ufw disable
