@@ -73,6 +73,10 @@ vport_up()
 		echo " :" brctl addif $V_SWITCH_NAME $V_PORT_NAME_INDEX;
 	done
 }
+mac_address()
+{
+	printf "$(cat /sys/class/net/$1/address | sed s/./$2/2 | sed s/./%/16 | sed s/./02x/17)" $3;
+}
 netmaks()
 {
 	sipcalc  $1 $2 | grep 'Network mask (bits)' | cut -d '-' -f2 | tr -d ' ';
