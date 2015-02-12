@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# Globals
+PATH_ROOT=$(/usr/local/bin/settings 'path.root');
+GATEWAY_NAME=$(settings network.nic.gateway.name);
+V_GATEWAY_NAME=$(settings network.vnic.gateway.name);
+
+# Source Functions
+. $PATH_ROOT/lib/common
+
+# Functions
+main()
+{
+	echo ""
+	vgateway_up;
+	echo ""
+	vswitch_up;
+}
+vgateway_up()
+{
+	V_GATEWAY_ADDRESS=$(settings network.vnic.gateway.address);
+	V_GATEWAY_NETMASK_BITS=$(netmaks $(settings network.vnic.gateway.address) $(settings network.vnic.gateway.mask));
+	V_GATEWAY_BROADCAST=$(broadcast $(settings network.vnic.gateway.address) $(settings network.vnic.gateway.mask));
+	V_GATEWAY_MAC_LOCAL_VALUE=$(settings network.vnic.gateway.mac_local_value);
+	V_GATEWAY_MAC_OCTET_INDEX=$(settings network.vnic.gateway.mac_octet_index);
+	V_GATEWAY_MAC_OCTET_VALUE=$(settings network.vnic.gateway.mac_octet_value);
+	V_GATEWAY_DESCRIPTION=$(settings network.vnic.gateway.description);
+	
+	echo $V_GATEWAY_DESCRIPTION;
+	echo "-" ip tuntap add dev $V_GATEWAY_NAME mode tap user $(whoami)
+	echo "-" ip addr add $V_GATEWAY_ADDRESS/$V_GATEWAY_NETMASK_BITS broadcast $V_GATEWAY_BROADCAST dev $V_GATEWAY_NAME
+	echo "-" ip link set dev $V_GATEWAY_NAME address $(mac_address $GATEWAY_NAME $V_GATEWAY_MAC_LOCAL_VALUE $V_GATEWAY_MAC_OCTET_VALUE $V_GATEWAY_MAC_OCTET_INDEX);
+	echo "-" ip link set $V_GATEWAY_NAME up
+	echo "-" iptables -t nat -A POSTROUTING -o $V_GATEWAY_NAME -j MASQUERADE;
+	echo "-" iptables -A FORWARD -i $V_GATEWAY_NAME -o $GATEWAY_NAME -m state --state RELATED,ESTABLISHED -j ACCEPT;
+	echo "-" iptables -A FORWARD -i $GATEWAY_NAME -o $V_GATEWAY_NAME -j ACCEPT;
+}
+vswitch_up()
+{	
+	V_SWITCH_COUNT=$(expr $(settings network.vswitch.vchassis length) - 1);
+	for (( V_SWITCH_INDEX=0; V_SWITCH_INDEX<=$V_SWITCH_COUNT; V_SWITCH_INDEX++ ))
+	do
+		V_SWITCH_NAME=$(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.name);
+		V_SWITCH_ADDRESS=$(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.address);
+		V_SWITCH_NETMASK_BITS=$(netmaks $(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.address) $(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.mask));
+		V_SWITCH_BROADCAST=$(broadcast $(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.address) $(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.mask));
+		V_SWITCH_MAC_LOCAL_VALUE=$(settings network.vswitch.global.mac_local_value);
+		V_SWITCH_MAC_OCTET_INDEX=$(settings network.vswitch.global.mac_octet_index);
+		V_SWITCH_DESCRIPTION=$(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.description);
+		
+		echo $V_SWITCH_DESCRIPTION;
+		echo "vSwitch:" $V_SWITCH_NAME;
+		echo "-" brctl addbr $V_SWITCH_NAME;
+		echo "-" brctl setfd $V_SWITCH_NAME 9;
+		echo "-" brctl sethello $V_SWITCH_NAME 2;
+		echo "-" brctl setmaxage $V_SWITCH_NAME 12;
+		echo "-" brctl stp $V_SWITCH_NAME off;
+		echo "-" ip addr add $V_SWITCH_ADDRESS/$V_SWITCH_NETMASK_BITS broadcast $V_SWITCH_BROADCAST dev $V_SWITCH_NAME;
+		echo "-" ip link set dev $V_SWITCH_NAME address $(mac_address $GATEWAY_NAME $V_SWITCH_MAC_LOCAL_VALUE $V_SWITCH_INDEX $V_SWITCH_MAC_OCTET_INDEX);
+		echo "-" ip link set $V_SWITCH_NAME up;
+		vport_up $V_SWITCH_INDEX $V_SWITCH_NAME;
+	done
+}
+vport_up()
+{
+	V_SWITCH_INDEX=$1;
+	V_SWITCH_NAME=$2;
+	V_PORT_MAC_LOCAL_VALUE=$V_SWITCH_INDEX;
+	V_PORT_MAC_OCTET_INDEX=$(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.vport.mac_octet_index);
+	V_PORT_NAME=$(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.vport.name);
+	V_PORT_COUNT=$(expr $(settings network.vswitch.global.vport_count));
+	V_PORT_DESCRIPTION=$(settings network.vswitch.vchassis.index$V_SWITCH_INDEX.vport.description);
+	echo "" $V_PORT_DESCRIPTION"(s)" [$V_PORT_COUNT];
+	for (( V_PORT_INDEX=0; V_PORT_INDEX<=$(($V_PORT_COUNT - 1)); V_PORT_INDEX++ ))
+	do
+		V_PORT_NAME_INDEX=$V_PORT_NAME$V_PORT_INDEX;
+		echo " vPort:" $V_PORT_NAME_INDEX;
+		echo " -" ip tuntap add dev $V_PORT_NAME_INDEX mode tap user $(whoami);
+		echo " -" ip addr add 0.0.0.0 dev $V_PORT_NAME_INDEX;
+		echo " -" ip link set dev $V_SWITCH_NAME address $(mac_address $GATEWAY_NAME $V_PORT_MAC_LOCAL_VALUE $V_PORT_INDEX $V_PORT_MAC_OCTET_INDEX);
+		echo " -" ip link set $V_PORT_NAME_INDEX up;
+		echo " -" brctl addif $V_SWITCH_NAME $V_PORT_NAME_INDEX;
+	done
+	echo "";
+}
+
+# Main
+main;
