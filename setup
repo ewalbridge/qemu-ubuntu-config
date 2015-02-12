@@ -2,7 +2,7 @@
 apt-get update && apt-get -y upgrade
 # Install software
 apt-get install -y bridge-utils sipcalc qemu vlan socat jq
-apt-get install -yiotop nmon
+apt-get install -y iotop nmon
 # If vmware
 apt-get install -y open-vm-tools
 
