@@ -14,12 +14,23 @@
 					"vlan": {
 						"vnic": {
 							"index0": {
-								"name": "eth0:100",
-								"description": "Physical VLAN 100 Interface",
+								"name": "eth0:10",
+								"description": "VLAN 10 Interface",
 								"type": "dhcp",
 								"address": "",
 								"mask": "",
-								"vlanid": 100,
+								"vlanid": 10,
+								"enabled": 0
+							}
+						},
+						"vnic": {
+							"index1": {
+								"name": "eth0:20",
+								"description": "VLAN 20 Interface",
+								"type": "dhcp",
+								"address": "",
+								"mask": "",
+								"vlanid": 20,
 								"enabled": 0
 							}
 						}
@@ -32,32 +43,42 @@
 					"description": "Virtual Router Gateway Interface",
 					"type": "static",
 					"address": "169.254.254.254",
-					"mask": "255.255.255.0"
+					"mask": "255.255.255.0",
+					"mac_local_value": 3,
+					"mac_octet_index": 4,
+					"mac_octet_value": 255
 				}
 			},
 			"vswitch": {
-				"index0": {
-					"name": "imvs",
-					"description": "Local Device Management Virtual Switch",
-					"type": "static",
-					"address": "169.254.253.254",
-					"mask": "255.255.255.0",
-					"vport": {
-						"name": "imvp",
-						"description": "Local Device Management Virtual Port",
-						"count": 32
-					}
+				"global": {
+					"vport_count": 3,
+					"mac_local_value": 3,
+					"mac_octet_index": 4
 				},
-				"index1": {
-					"name": "rmvs",
-					"description": "Remote Device Management Virtual Switch",
-					"type": "static",
-					"address": "169.254.252.254",
-					"mask": "255.255.255.0",
-					"vport": {
-						"name": "rmvp",
-						"description": "Local Device Management Virtual Port",
-						"count": 32
+				"vchassis": {
+					"index0": {
+						"name": "imvs",
+						"description": "Local Device Management Virtual Switch",
+						"type": "static",
+						"address": "169.254.253.254",
+						"mask": "255.255.255.0",
+						"vport": {
+							"name": "imvp",
+							"description": "Local Device Management Virtual Port",
+							"mac_octet_index": 4
+						}
+					},
+					"index1": {
+						"name": "rmvs",
+						"description": "Remote Device Management Virtual Switch",
+						"type": "static",
+						"address": "169.254.252.254",
+						"mask": "255.255.255.0",
+						"vport": {
+							"name": "rmvp",
+							"description": "Local Device Management Virtual Port",
+							"mac_octet_index": 4
+						}
 					}
 				}
 			}
