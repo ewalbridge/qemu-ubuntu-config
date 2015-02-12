@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Globals
-V_SWITCH_COUNT=$(expr $(settings network.vswitch length) - 1);
+GATEWAY_NAME=$(settings network.nic.gateway.name);
 
 #Functions
 main_up()
@@ -13,7 +13,6 @@ vgateway_up()
 {
 	echo "";
 	
-	GATEWAY_NAME=$(settings network.nic.gateway.name);
 	V_GATEWAY_NAME=$(settings network.vnic.gateway.name);
 	V_GATEWAY_ADDRESS=$(settings network.vnic.gateway.address);
 	V_GATEWAY_NETMASK_BITS=$(netmaks $(settings network.vnic.gateway.address) $(settings network.vnic.gateway.mask));
@@ -22,6 +21,7 @@ vgateway_up()
 	
 	echo ":" ip tuntap add dev $V_GATEWAY_NAME mode tap user $(whoami)
 	echo ":" ip addr add $V_GATEWAY_ADDRESS/$V_GATEWAY_NETMASK_BITS broadcast $V_GATEWAY_BROADCAST dev $V_GATEWAY_NAME
+	echo ":" ip link set dev $V_GATEWAY_NAME address $(mac $GATEWAY_NAME 2 0)
 	echo ":" ip link set $V_GATEWAY_NAME up
 	echo ":" iptables -t nat -A POSTROUTING -o $V_GATEWAY_NAME -j MASQUERADE
 	echo ":" iptables -A FORWARD -i $V_GATEWAY_NAME -o $GATEWAY_NAME -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -32,7 +32,7 @@ vgateway_up()
 vswitch_up()
 {
 	echo "";
-	
+	V_SWITCH_COUNT=$(expr $(settings network.vswitch length) - 1);
 	for (( V_SWITCH_INDEX=0; V_SWITCH_INDEX<=$V_SWITCH_COUNT; V_SWITCH_INDEX++ ))
 	do
 		V_SWITCH_NAME=$(settings network.vswitch.index$V_SWITCH_INDEX.name);
