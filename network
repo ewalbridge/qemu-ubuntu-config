@@ -12,6 +12,7 @@ main_up()
 vgateway_up()
 {
 	echo "";
+	
 	GATEWAY_NAME=$(settings network.nic.gateway.name);
 	V_GATEWAY_NAME=$(settings network.vnic.gateway.name);
 	V_GATEWAY_ADDRESS=$(settings network.vnic.gateway.address);
