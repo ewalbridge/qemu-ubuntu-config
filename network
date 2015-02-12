@@ -21,7 +21,7 @@ vgateway_up()
 	
 	echo ":" ip tuntap add dev $V_GATEWAY_NAME mode tap user $(whoami)
 	echo ":" ip addr add $V_GATEWAY_ADDRESS/$V_GATEWAY_NETMASK_BITS broadcast $V_GATEWAY_BROADCAST dev $V_GATEWAY_NAME
-	echo ":" ip link set dev $V_GATEWAY_NAME address $(mac $GATEWAY_NAME 2 0)
+	echo ":" ip link set dev $V_GATEWAY_NAME address $(mac $GATEWAY_NAME 2 0);
 	echo ":" ip link set $V_GATEWAY_NAME up
 	echo ":" iptables -t nat -A POSTROUTING -o $V_GATEWAY_NAME -j MASQUERADE
 	echo ":" iptables -A FORWARD -i $V_GATEWAY_NAME -o $GATEWAY_NAME -m state --state RELATED,ESTABLISHED -j ACCEPT
