@@ -1,0 +1,32 @@
+#!/bin/bash
+
+netmaks()
+{
+	sipcalc  $1 $2 | grep "Network mask (bits)" | cut -d "-" -f2 | tr -d " ";
+}
+broadcast()
+{
+	sipcalc  $1 $2 | grep "Broadcast address" | cut -d "-" -f2 | tr -d " ";
+}
+mac_address()
+{
+	INTERFACE=$1;
+	MAC_LOCAL_VALUE=$(mac_address_index $2);
+	MAC_OCTET_VALUE=$3;
+	MAC_OCTET_INDEX=$4;
+	if [ "$MAC_LOCAL_VALUE" != "" ]; 
+	then
+		printf "$(cat /sys/class/net/$INTERFACE/address | sed s/./$MAC_LOCAL_VALUE/2 | sed s/./%/$MAC_OCTET_INDEX | sed s/./02x/$(($MAC_OCTET_INDEX + 1)))" $MAC_OCTET_VALUE;
+	fi
+}
+mac_address_index()
+{
+	case "$1" in
+		0) CHAR="a" ;;
+		1) CHAR="e" ;;
+		2) CHAR="2" ;;
+		3) CHAR="6" ;;
+		*) exit 1;
+	esac
+	echo $CHAR;
+}
