@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ "$1" != "" ];
+then
+	ARG1=".settings.$1";
+else
+	ARG1=".";
+fi
+
+if [ "$2" != "" ];
+then
+	ARG2="| $2";
+else
+	ARG2="";
+fi
+
+setting=$(jq "$ARG1 $ARG2" /etc/common/settings.json 2>/dev/null);
+if [[ ${setting:0:1} == "\"" ]]; 
+then 
+	echo $setting | sed -e 's/^"//' -e 's/"$//';
+else 
+	echo $setting | jq '.'
+fi
