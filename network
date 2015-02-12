@@ -95,12 +95,12 @@ broadcast()
 mac_address()
 {
 	INTERFACE=$1;
-	MAC_LOCAL=$(mac_address_index $2);
+	MAC_LOCAL_VALUE=$(mac_address_index $2);
 	MAC_OCTET_VALUE=$3;
 	MAC_OCTET_INDEX=$4;
-	if [ "$MAC_LOCAL" != "" ]; 
+	if [ "$MAC_LOCAL_VALUE" != "" ]; 
 	then
-		printf "$(cat /sys/class/net/$INTERFACE/address | sed s/./$MAC_LOCAL/2 | sed s/./%/$MAC_OCTET_INDEX | sed s/./02x/$(($MAC_OCTET_INDEX + 1)))" $MAC_OCTET_VALUE;
+		printf "$(cat /sys/class/net/$INTERFACE/address | sed s/./$MAC_LOCAL_VALUE/2 | sed s/./%/$MAC_OCTET_INDEX | sed s/./02x/$(($MAC_OCTET_INDEX + 1)))" $MAC_OCTET_VALUE;
 	fi
 }
 mac_address_index()
