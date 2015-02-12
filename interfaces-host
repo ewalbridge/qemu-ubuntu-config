@@ -5,28 +5,3 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet dhcp
-
-auto tap0
-iface tap0 inet manual
-	pre-up tunctl -t $IFACE -u root
-	pre-up ip link set $IFACE address 92:62:f0:17:23:da
-	up ifconfig $IFACE 172.16.0.1/29 up
-	down ifconfig $IFACE down
-	down tunctl -d $IFACE
-
-auto tap1
-iface tap1 inet manual
-	pre-up tunctl -t $IFACE -u root
-	pre-up ip link set $IFACE address 92:62:f0:17:23:db
-	up ifconfig $IFACE 172.16.1.1/29 up
-	down ifconfig $IFACE down
-	down tunctl -d $IFACE
-	
-auto tap2
-iface tap2 inet manual
-	pre-up tunctl -t $IFACE -u root
-	pre-up ip link set $IFACE address 92:62:f0:17:23:dc
-	up ifconfig $IFACE 172.16.2.1/29 up
-	down ifconfig $IFACE down
-	down tunctl -d $IFACE
-	
