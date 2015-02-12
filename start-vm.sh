@@ -5,7 +5,7 @@ HWADDR0=$(cat /opt//var/vm$ID/hw0.addr)
 
 qemu-system-x86_64 \
 	-boot d \
-	-hda /opt//var/vm$ID/hd0.img \
+	-hda /opt/manage/var/vm$ID/hd0.img \
 	-m 1024 \
 	-net nic,model=e1000,vlan=0,macaddr=$HWADDR0 \
 	-net tap,ifname=tap$ID,vlan=0,script=no,downscript=no \
