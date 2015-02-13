@@ -11,9 +11,12 @@ su -c 'echo "8021q" >> /etc/modules'
 
 # Remove ufw
 # http://askubuntu.com/questions/30781/see-configured-rules-even-when-inactive
-ufw disable
-apt-get remove ufw
-apt-get purge ufw
+#ufw disable
+#apt-get remove ufw
+#apt-get purge ufw
+
+mkdir /etc/common
+
 
 # Add iptables rules to primary interface
 nano /etc/network/interfaces
