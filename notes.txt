@@ -1,0 +1,18 @@
+#/etc/network/interfaces
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet manual
+
+auto vs-ext
+iface vs-ext inet dhcp
+
+
+ovs-vsctl add-br vs-int
+ovs-vsctl add-br vs-ext
+ovs-vsctl ovs-vsctl add-port vs-ext eth0
+
+ovs-vsctl add-port vs-int vp1-int
+ovs-vsctl add-port vs-ext vp1-ext
+ovs-vsctl add-port vs-ext vp2-ext
