@@ -21,6 +21,7 @@ ovs-vsctl add-port vs-ext vp1-ext
 /etc/network/if-up.d/lxc-vs-int-ifup
 /etc/network/if-up.d/lxc-vs-int-ifdown
 
-
+/etc/network/if-up.d/lxc-vs-ext-ifup
+/etc/network/if-up.d/lxc-vs-ext-ifdown
 
 
