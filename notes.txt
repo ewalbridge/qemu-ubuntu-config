@@ -3,7 +3,9 @@ auto lo
 iface lo inet loopback
 
 auto eth0
-iface eth0 inet manual
+iface eth0 inet static
+address 0.0.0.0
+
 
 auto vs-ext
 iface vs-ext inet dhcp
