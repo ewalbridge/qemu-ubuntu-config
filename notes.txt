@@ -24,4 +24,6 @@ ovs-vsctl add-port vs-ext vp1-ext
 /etc/network/if-up.d/lxc-vs-ext-ifup
 /etc/network/if-up.d/lxc-vs-ext-ifdown
 
+https://access.redhat.com/solutions/53031
+
 
